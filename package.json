@@ -1,0 +1,16 @@
+{
+  "name": "todo-demo",
+  "version": "1.0.0",
+  "description": "Complete Todo List web application with CI/CD",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo 'Running tests' && exit 0"
+  },
+  "keywords": ["todo", "express", "nodejs"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List Application</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <h1>📝 My Todo List</h1>
+            <p class="subtitle">Stay organized and productive</p>
+        </header>
+
+        <!-- Input Section -->
+        <div class="input-section">
+            <input 
+                type="text" 
+                id="todoInput" 
+                class="todo-input" 
+                placeholder="Add a new todo..."
+                autocomplete="off"
+            >
+            <button id="addBtn" class="btn-add">Add Todo</button>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="loading-indicator hidden">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+        </div>
+
+        <!-- Todo List Section -->
+        <section class="todo-section">
+            <div id="todoList" class="todo-list">
+                <!-- Todos will be dynamically inserted here -->
+            </div>
+            <div id="emptyMessage" class="empty-message">
+                <p>📭 No todos yet. Add one to get started!</p>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <footer class="stats">
+            <p>Total: <span id="totalTodos">0</span> | Completed: <span id="completedTodos">0</span></p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

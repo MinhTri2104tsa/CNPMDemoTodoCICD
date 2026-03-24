@@ -1,0 +1,25 @@
+/node_modules
+/dist
+/.env
+/.env.local
+/.env.development
+/.env.production
+/.env.test
+
+# Logs
+/logs
+*.log
+# OS generated files
+.DS_Store
+Thumbs.db
+# IDE files
+.idea
+.vscode
+# Build files
+/build
+# Coverage reports
+/coverage
+# Misc
+*.bak
+*.tmp
+# Ignore all files in the public directory except for index.html
