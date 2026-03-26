@@ -329,6 +329,40 @@ app.get('/stats', authenticate, (req, res) => {
 });
 
 /**
+ * GET /todos/export
+ * Description: Export todos data (CSV format) for downstream integrations
+ * Auth: Required
+ */
+app.get('/todos/export', authenticate, (req, res) => {
+  if (todos.length === 0) {
+    return res.status(200).json({ message: 'No todos to export', data: [] });
+  }
+
+  // Use CSV output (commonly expected export format)
+  const headers = ['id', 'title', 'status', 'dueDate', 'createdAt', 'history'];
+  const csvRows = [headers.join(',')];
+
+  todos.forEach(todo =>{
+    const row = [
+      todo.id,
+      `"${todo.title.replace(/"/g, '""')}"`,
+      todo.status,
+      todo.dueDate || '',
+      todo.createdAt,
+      `"${todo.history.join(' | ').replace(/"/g, '""')}"`
+    ];
+    csvRows.push(row.join(','));
+  });
+
+  const csvContent = csvRows.join('\n');
+  log('INFO', `GET /todos/export - Exported ${todos.length} todos`);
+
+  res.header('Content-Type', 'text/csv');
+  res.attachment('todos-export.csv');
+  res.send(csvContent);
+});
+
+/**
  * GET /status
  * Description: Get application status and version (for CI/CD)
  * Auth: NOT required (public endpoint)
