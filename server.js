@@ -116,6 +116,41 @@ function validateTodoData(data) {
 }
 
 /**
+ * Validate partial todo update data
+ * @param {Object} data - Todo data to validate (only provided fields)
+ * @returns {Object} - { isValid: boolean, errors: [] }
+ */
+function validateTodoUpdateData(data) {
+  const errors = [];
+
+  // Title validation (only if provided)
+  if (data.title !== undefined) {
+    if (typeof data.title !== 'string' || data.title.trim().length === 0) {
+      errors.push('Title must be a non-empty string');
+    }
+  }
+
+  // Status validation (only if provided)
+  const validStatuses = ['pending', 'in-progress', 'done'];
+  if (data.status !== undefined && !validStatuses.includes(data.status)) {
+    errors.push('Status must be one of: pending, in-progress, done');
+  }
+
+  // Due date validation (only if provided)
+  if (data.dueDate !== undefined && data.dueDate !== null) {
+    const dueDate = new Date(data.dueDate);
+    if (isNaN(dueDate.getTime())) {
+      errors.push('Due date must be a valid ISO date string');
+    }
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors
+  };
+}
+
+/**
  * Create a new todo with enhanced model
  * @param {Object} data - Todo data
  * @returns {Object} - New todo object
@@ -214,8 +249,8 @@ app.put('/todos/:id', authenticate, (req, res) => {
   }
 
   // Validate input if provided
-  if (req.body.title || req.body.status || req.body.dueDate !== undefined) {
-    const validation = validateTodoData(req.body);
+  if (req.body.title !== undefined || req.body.status !== undefined || req.body.dueDate !== undefined) {
+    const validation = validateTodoUpdateData(req.body);
     if (!validation.isValid) {
       log('WARN', `PUT /todos/${id} - Validation failed: ${validation.errors.join(', ')}`);
       return res.status(400).json({

@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "node server.js & sleep 2 && node test.js",
+    "test": "start /B node server.js && timeout /t 3 /nobreak >nul && node test.js",
+    "test:unix": "node server.js & sleep 2 && node test.js",
     "dev": "node server.js"
   },
   "keywords": [
