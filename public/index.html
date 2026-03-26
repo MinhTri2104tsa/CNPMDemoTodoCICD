@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todo List Application</title>
+    <title>Advanced Todo List Application</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <!-- Header Section -->
         <header class="header">
-            <h1>📝 My Todo List</h1>
-            <p class="subtitle">Stay organized and productive</p>
+            <h1>📝 Advanced Todo List</h1>
+            <p class="subtitle">Stay organized with status tracking and due dates</p>
             <!-- Version Display -->
             <div class="version-info">
                 <small id="appVersion">v1.0.0 (loading...)</small>
@@ -20,14 +20,45 @@
 
         <!-- Input Section -->
         <div class="input-section">
-            <input 
-                type="text" 
-                id="todoInput" 
-                class="todo-input" 
-                placeholder="Add a new todo..."
+            <input
+                type="text"
+                id="todoInput"
+                class="todo-input"
+                placeholder="Enter todo title..."
                 autocomplete="off"
             >
+            <select id="statusSelect" class="status-select">
+                <option value="pending">Pending</option>
+                <option value="in-progress">In Progress</option>
+                <option value="done">Done</option>
+            </select>
+            <input
+                type="date"
+                id="dueDateInput"
+                class="due-date-input"
+                title="Due date (optional)"
+            >
             <button id="addBtn" class="btn-add">Add Todo</button>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-controls">
+                <label>Filter by Status:</label>
+                <select id="filterStatus" class="filter-select">
+                    <option value="">All</option>
+                    <option value="pending">Pending</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="done">Done</option>
+                </select>
+                <input
+                    type="text"
+                    id="filterKeyword"
+                    class="filter-input"
+                    placeholder="Search by keyword..."
+                >
+                <button id="clearFiltersBtn" class="btn-clear">Clear Filters</button>
+            </div>
         </div>
 
         <!-- Loading Indicator -->
@@ -48,13 +79,30 @@
 
         <!-- Stats Section -->
         <section class="stats">
-            <p>Total: <span id="totalTodos">0</span> | Completed: <span id="completedTodos">0</span></p>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-label">Total:</span>
+                    <span class="stat-value" id="totalTodos">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Pending:</span>
+                    <span class="stat-value" id="pendingTodos">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">In Progress:</span>
+                    <span class="stat-value" id="inProgressTodos">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Done:</span>
+                    <span class="stat-value" id="doneTodos">0</span>
+                </div>
+            </div>
         </section>
 
         <!-- Footer with Version Info -->
         <footer class="footer">
-            <p>Todo List Application | Status: <span id="appStatus">checking...</span></p>
-            <small>Built with Node.js + Express</small>
+            <p>Advanced Todo List Application | Status: <span id="appStatus">checking...</span></p>
+            <small>Built with Node.js + Express | Enhanced for CI/CD Demo</small>
         </footer>
     </div>
 

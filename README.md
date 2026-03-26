@@ -1,32 +1,41 @@
-# 📝 Todo List Application
+# 📝 Advanced Todo List Application
 
-A complete, production-ready Todo List web application with **CI/CD using GitHub Actions**. Perfect for learning and demonstrating DevOps practices and modern full-stack development.
+A **production-ready, enterprise-grade Todo List web application** with **comprehensive CI/CD using GitHub Actions**. Perfect for learning advanced full-stack development, DevOps practices, and demonstrating modern software engineering principles.
 
 ## 🎯 Features
 
-### ✅ Basic Features
-- **Add Todos** - Create new todo items with validation
-- **List Todos** - View all todos with real-time updates
-- **Delete Todos** - Remove completed or unwanted todos
-- **Mark Complete** - Toggle todo completion status
-- **Stats Display** - View total and completed todo count
+### ✅ Enhanced Todo Model
+- **Advanced Todo Structure** - Each todo includes: `id`, `title`, `status`, `dueDate`, `createdAt`, `history`
+- **Status Tracking** - Three states: `pending`, `in-progress`, `done`
+- **Due Date Management** - Optional due dates with overdue detection
+- **Change History** - Track all modifications with timestamps
+- **Real-time Updates** - Instant UI updates with server synchronization
 
-### 🚀 Advanced Features
-- **REST API** - Full-featured HTTP API endpoints
-- **Version Management** - Easy-to-update version system
-- **Health Check** - `/status` endpoint for monitoring
-- **Comprehensive Logging** - Console logs for CI/CD visibility
-- **Error Handling** - Proper validation and error responses
-- **Responsive UI** - Beautiful, mobile-friendly interface
-- **XSS Protection** - HTML escaping for security
+### 🚀 Advanced API Features
+- **Complete REST API** - Full CRUD operations with advanced filtering
+- **Authentication** - Bearer token security (`Authorization: Bearer 123456`)
+- **Filtering System** - Filter by status and search by keyword
+- **Statistics Dashboard** - Real-time stats with server-side calculations
+- **Health Monitoring** - `/status` and `/health` endpoints for monitoring
+- **Comprehensive Validation** - Input validation with detailed error messages
+- **Error Handling** - Proper HTTP status codes and error responses
 
-### 🔄 CI/CD Pipeline
-- **GitHub Actions Workflow** - Automated testing and deployment
+### 🔧 System Features
+- **Version Management** - Centralized version control with `version.js`
+- **Structured Logging** - Console logs for CI/CD visibility and debugging
+- **Environment Configuration** - Configurable settings for different environments
+- **Security Features** - XSS protection, input sanitization, authentication
+- **Responsive Design** - Mobile-first, beautiful UI with status-based colors
+
+### 🔄 Advanced CI/CD Pipeline
 - **Matrix Testing** - Test on multiple Node.js versions (16.x, 18.x, 20.x)
-- **Dependency Caching** - Speed up builds with npm cache
-- **Security Scanning** - npm audit for vulnerability detection
-- **Deployment Steps** - Automated deployment to production
-- **Comprehensive Reporting** - Detailed pipeline logs
+- **Dependency Caching** - npm cache for faster builds
+- **Security Scanning** - Automated vulnerability detection
+- **Build Artifacts** - Automated build and deployment preparation
+- **Environment Variables** - Configurable deployment environments
+- **Deployment Simulation** - Realistic deployment workflow
+- **Comprehensive Reporting** - Detailed pipeline logs and notifications
+- **Fail-Fast Strategy** - Continue testing even if some versions fail
 
 ---
 
@@ -34,17 +43,18 @@ A complete, production-ready Todo List web application with **CI/CD using GitHub
 
 ```
 TodoDemo/
-├── server.js              # Express.js backend server
+├── version.js             # Centralized version management
+├── server.js              # Advanced Express.js backend server
 ├── config.js              # Configuration & version management
-├── test.js                # API test suite
+├── test.js                # Comprehensive API test suite with auth
 ├── package.json           # Dependencies & scripts
 ├── .github/
 │   └── workflows/
-│       └── ci.yml        # GitHub Actions CI/CD pipeline
+│       └── ci-cd.yml     # Advanced GitHub Actions CI/CD pipeline
 ├── public/
-│   ├── index.html        # Frontend HTML
-│   ├── style.css         # Frontend styles
-│   └── script.js         # Frontend JavaScript
+│   ├── index.html        # Enhanced frontend HTML with filters
+│   ├── style.css         # Advanced responsive styles with status colors
+│   └── script.js         # Frontend JavaScript with auth & filtering
 └── node_modules/         # Dependencies (auto-installed)
 ```
 
@@ -52,11 +62,13 @@ TodoDemo/
 
 ## 🛠️ Tech Stack
 
-- **Backend**: Node.js + Express.js
-- **Frontend**: HTML5 + CSS3 + Vanilla JavaScript
-- **Testing**: Node.js built-in (http module)
-- **CI/CD**: GitHub Actions
-- **Version Control**: Git
+- **Backend**: Node.js + Express.js with advanced middleware
+- **Frontend**: HTML5 + CSS3 + Vanilla JavaScript (ES6+)
+- **Authentication**: Bearer token system
+- **Testing**: Node.js built-in HTTP module with comprehensive coverage
+- **CI/CD**: GitHub Actions with matrix testing and caching
+- **Version Control**: Git with automated workflows
+- **Security**: Input validation, XSS protection, authentication
 
 ---
 
@@ -64,14 +76,14 @@ TodoDemo/
 
 Before you begin, make sure you have:
 
-- **Node.js** (v14 or higher) - [Download](https://nodejs.org)
+- **Node.js** (v16 or higher) - [Download](https://nodejs.org)
 - **npm** (comes with Node.js)
 - **Git** - [Download](https://git-scm.com)
 - **GitHub Account** (for CI/CD)
 
 Verify installation:
 ```bash
-node --version
+node --version  # Should be 16.x or higher
 npm --version
 git --version
 ```
@@ -103,10 +115,11 @@ npm start
 You should see:
 ```
 ═══════════════════════════════════════════════════════
-🚀 Todo List Application is running!
+🚀 Advanced Todo List Server is running!
 📍 Server Address: http://localhost:3000
 📦 Version: 1.0.0
 🌍 Environment: development
+🔐 Auth: Bearer token required
 ═══════════════════════════════════════════════════════
 ```
 
@@ -114,7 +127,7 @@ You should see:
 
 Visit: **http://localhost:3000**
 
-You should see the Todo List application with a purple gradient background!
+You should see the Advanced Todo List application with enhanced features!
 
 ### 5️⃣ Stop the Server
 
@@ -122,13 +135,26 @@ Press `Ctrl + C` in the terminal.
 
 ---
 
-## 📡 API Reference
+## 📡 Advanced API Reference
+
+### Authentication
+All API endpoints (except `/status` and `/health`) require authentication:
+```
+Authorization: Bearer 123456
+```
 
 ### GET /todos
-Retrieve all todos
+Retrieve all todos with optional filtering
 
 ```bash
-curl http://localhost:3000/todos
+# Get all todos
+curl -H "Authorization: Bearer 123456" http://localhost:3000/todos
+
+# Filter by status
+curl -H "Authorization: Bearer 123456" "http://localhost:3000/todos?status=pending"
+
+# Search by keyword
+curl -H "Authorization: Bearer 123456" "http://localhost:3000/todos?keyword=test"
 ```
 
 **Response:**
@@ -136,9 +162,22 @@ curl http://localhost:3000/todos
 [
   {
     "id": 1,
-    "text": "Learn Node.js",
-    "completed": false,
-    "createdAt": "2024-03-26T10:30:00.000Z"
+    "title": "Complete project documentation",
+    "status": "in-progress",
+    "dueDate": "2024-04-15T00:00:00.000Z",
+    "createdAt": "2024-03-26T10:30:00.000Z",
+    "history": [
+      {
+        "action": "created",
+        "timestamp": "2024-03-26T10:30:00.000Z"
+      },
+      {
+        "action": "status_changed",
+        "oldValue": "pending",
+        "newValue": "in-progress",
+        "timestamp": "2024-03-26T11:00:00.000Z"
+      }
+    ]
   }
 ]
 ```
@@ -148,45 +187,102 @@ Create a new todo
 
 ```bash
 curl -X POST http://localhost:3000/todos \
+  -H "Authorization: Bearer 123456" \
   -H "Content-Type: application/json" \
-  -d '{"text": "Build an app"}'
+  -d '{
+    "title": "Review pull requests",
+    "status": "pending",
+    "dueDate": "2024-04-01"
+  }'
 ```
 
 **Request Body:**
 ```json
 {
-  "text": "Your todo text here"
+  "title": "Required: Todo title (non-empty string)",
+  "status": "Optional: pending|in-progress|done (default: pending)",
+  "dueDate": "Optional: ISO date string"
 }
 ```
 
 **Response:** (201 Created)
 ```json
 {
-  "id": 1,
-  "text": "Build an app",
-  "completed": false,
-  "createdAt": "2024-03-26T10:30:00.000Z"
+  "id": 2,
+  "title": "Review pull requests",
+  "status": "pending",
+  "dueDate": "2024-04-01T00:00:00.000Z",
+  "createdAt": "2024-03-26T12:00:00.000Z",
+  "history": [
+    {
+      "action": "created",
+      "timestamp": "2024-03-26T12:00:00.000Z"
+    }
+  ]
 }
 ```
 
 ### PUT /todos/:id
-Update todo completion status
+Update an existing todo
 
 ```bash
 curl -X PUT http://localhost:3000/todos/1 \
+  -H "Authorization: Bearer 123456" \
   -H "Content-Type: application/json" \
-  -d '{"completed": true}'
+  -d '{
+    "title": "Updated project documentation",
+    "status": "done"
+  }'
+```
+
+**Request Body:** (partial update supported)
+```json
+{
+  "title": "Optional: Update title",
+  "status": "Optional: Update status"
+}
 ```
 
 ### DELETE /todos/:id
 Delete a todo
 
 ```bash
-curl -X DELETE http://localhost:3000/todos/1
+curl -X DELETE http://localhost:3000/todos/1 \
+  -H "Authorization: Bearer 123456"
+```
+
+**Response:** (200 OK)
+```json
+{
+  "message": "Todo deleted successfully",
+  "deletedTodo": {
+    "id": 1,
+    "title": "Complete project documentation",
+    "status": "done"
+    // ... full todo object
+  }
+}
+```
+
+### GET /stats
+Get comprehensive statistics
+
+```bash
+curl -H "Authorization: Bearer 123456" http://localhost:3000/stats
+```
+
+**Response:**
+```json
+{
+  "total": 5,
+  "pending": 2,
+  "inProgress": 1,
+  "done": 2
+}
 ```
 
 ### GET /status
-Health check & version info
+Application status and version info (no auth required)
 
 ```bash
 curl http://localhost:3000/status
@@ -197,17 +293,27 @@ curl http://localhost:3000/status
 {
   "status": "running",
   "version": "1.0.0",
-  "appName": "Todo List Application",
-  "environment": "development",
-  "timestamp": "2024-03-26T10:30:00.000Z",
-  "uptime": 123.456,
-  "totalTodos": 5
+  "timestamp": "2024-03-26T10:30:00.000Z"
+}
+```
+
+### GET /health
+Simple health check (no auth required)
+
+```bash
+curl http://localhost:3000/health
+```
+
+**Response:**
+```json
+{
+  "status": "ok"
 }
 ```
 
 ---
 
-## 🧪 Testing
+## 🧪 Advanced Testing Suite
 
 ### Run Tests Locally
 
@@ -216,287 +322,377 @@ npm test
 ```
 
 **What it tests:**
-- ✅ Server is running and responds to health checks
-- ✅ `/status` endpoint returns correct data with version
-- ✅ Version follows semantic versioning (x.y.z)
-- ✅ GET /todos returns an array
-- ✅ POST /todos creates a new todo
-- ✅ DELETE /todos/:id removes a todo
-- ✅ Error handling works correctly
+- ✅ **Health Checks** - `/status` and `/health` endpoints
+- ✅ **Authentication** - Bearer token validation
+- ✅ **CRUD Operations** - Create, read, update, delete todos
+- ✅ **Filtering** - Status and keyword filtering
+- ✅ **Statistics** - Stats dashboard functionality
+- ✅ **Validation** - Input validation and error handling
+- ✅ **Error Handling** - 404s, 400s, 401s
+- ✅ **History Tracking** - Todo modification history
+- ❌ **Intentional Failure** - One test designed to fail for CI/CD demo
 
 **Example output:**
 ```
 ═══════════════════════════════════════════════════════
-🧪 TODO LIST APPLICATION - TEST SUITE
+🧪 ADVANCED TODO LIST - COMPREHENSIVE TEST SUITE
 ═══════════════════════════════════════════════════════
 
-📍 Test Group 1: Health Check
-
-✅ PASS | Server responds to /status endpoint
+📍 Test Group 1: Health Checks
+✅ PASS | /status returns 200 without auth
 ✅ PASS | /status returns correct structure
-✅ PASS | Version follows semantic versioning (x.y.z)
-✅ PASS | Status is "running"
 
-📍 Test Group 2: GET /todos Endpoint
-
-✅ PASS | GET /todos returns 200 status
-✅ PASS | GET /todos returns an array
+📍 Test Group 2: Authentication
+✅ PASS | GET /todos requires auth
+✅ PASS | Invalid token returns 401
 
 [... more tests ...]
+
+📍 Test Group 9: Failing Scenario (Intentional)
+❌ FAIL | GET /todos/export should work (but it doesn't - intentional fail)
 
 ═══════════════════════════════════════════════════════
 📊 TEST SUMMARY
 ═══════════════════════════════════════════════════════
-✅ Passed: 14
-❌ Failed: 0
-📈 Total:  14
+✅ Passed: 18
+❌ Failed: 1
+📈 Total:  19
 ═══════════════════════════════════════════════════════
 
-🎉 All tests passed! Application is ready for deployment.
+⚠️  Some tests failed. Check the results above.
+💡 Note: One test is intentionally designed to fail for CI/CD demonstration.
 ```
+
+### Test Coverage
+- **19 comprehensive tests** covering all API endpoints
+- **Authentication testing** with valid/invalid tokens
+- **Data validation** for all input scenarios
+- **Error handling** for edge cases
+- **Filtering and search** functionality
+- **Statistics calculation** verification
+- **Intentional failure** for CI/CD pipeline demonstration
 
 ---
 
-## 📝 Changing the Version
+## 📝 Version Management
 
-The application version is defined in `config.js`. To change it:
+### Current Version System
+The application uses centralized version management:
 
-### Edit config.js
+**version.js:**
 ```javascript
-const config = {
-  // Change this version number
-  version: '1.1.0',  // ← Update here
-  
-  appName: 'Todo List Application',
-  // ... rest of config
-};
+module.exports = "1.0.0";
 ```
 
-Then:
-1. Commit the change to Git
-2. Push to GitHub
-3. GitHub Actions will automatically run tests with the new version
-4. Check the workflow logs to see the version in logs
+**config.js:**
+```javascript
+const version = require('./version');
+// Version is now imported from version.js
+```
+
+### Updating Version
+1. Edit `version.js`:
+   ```javascript
+   module.exports = "1.1.0";
+   ```
+
+2. Commit and push:
+   ```bash
+   git add version.js
+   git commit -m "Bump version to 1.1.0"
+   git push origin main
+   ```
+
+3. GitHub Actions will automatically test with the new version
 
 ---
 
-## 🔄 GitHub Actions CI/CD Setup
+## 🔄 Advanced GitHub Actions CI/CD
 
-### Prerequisites
-1. Push your code to GitHub
-2. Make sure `.github/workflows/ci.yml` exists in your repository
-
-### How It Works
-
-The CI/CD pipeline automatically triggers when:
-- ✅ **You push code to `main` branch** - Full pipeline runs
-- ✅ **You create a pull request** - Tests run automatically
-- ✅ **On any push to `develop` branch** - Tests run
+### Workflow Features
+- **Matrix Testing** - Node.js 16.x, 18.x, 20.x
+- **Dependency Caching** - npm cache for faster builds
+- **Security Scanning** - Automated vulnerability checks
+- **Build Artifacts** - Deployment-ready packages
+- **Environment Variables** - Configurable deployment
+- **Deployment Simulation** - Realistic production deployment
+- **Comprehensive Notifications** - Discord/webhook integration ready
 
 ### Workflow Stages
 
-#### 1️⃣ **🧪 Test Job** (Matrix: 16.x, 18.x, 20.x)
-- Checkout code
-- Setup Node.js
-- Cache dependencies
-- Install dependencies
-- Run test suite
-
-#### 2️⃣ **🏗️ Build Job**
-- Checkout code
-- Setup Node.js
-- Install dependencies
-- Verify project structure
-- Check syntax
-- Display package info
-
-#### 3️⃣ **🔒 Security Job**
-- Checkout code
-- Install dependencies
-- Run npm audit
-
-#### 4️⃣ **🚀 Deploy Job** (Only on `main` branch push)
-- Pre-deployment checks
-- Build artifacts
-- Deploy application
-- Post-deployment verification
-
-#### 5️⃣ **📊 Report Job**
-- Generate comprehensive report
-- Display final status
-
-### View Workflow Results
-
-1. Go to your GitHub repository
-2. Click **Actions** tab
-3. Select a workflow run
-4. View detailed logs for each job and step
-
-**Example output in workflow:**
+#### 1️⃣ **🧪 Test Job** (Matrix Strategy)
+```yaml
+strategy:
+  matrix:
+    node-version: [16.x, 18.x, 20.x]
+  fail-fast: false
 ```
-[INFO] [2024-03-26T10:30:00.000Z] [INFO] 🚀 Todo List Server is running!
-[INFO] [2024-03-26T10:30:00.000Z] [INFO] 📦 Version: 1.0.0
-[INFO] [2024-03-26T10:30:02.000Z] [INFO] POST /todos - New todo created: "Test task" (ID: 1)
-[INFO] [2024-03-26T10:30:05.000Z] [INFO] DELETE /todos/1 - Todo deleted: "Test task"
-[INFO] [2024-03-26T10:30:08.000Z] [INFO] GET /status - Health check request
+- Parallel testing on multiple Node versions
+- Dependency caching with `cache: 'npm'`
+- Comprehensive test execution
+- Test result artifacts
+
+#### 2️⃣ **🔒 Security Job**
+- Automated `npm audit` scanning
+- Vulnerability detection and reporting
+- Dependency security validation
+
+#### 3️⃣ **🏗️ Build Job**
+- Production build creation
+- Artifact generation
+- Deployment package preparation
+
+#### 4️⃣ **🚀 Deploy Job** (Main branch only)
+```yaml
+if: github.ref == 'refs/heads/main'
+environment: staging
 ```
+- Deployment simulation
+- Health checks
+- Status reporting
+
+#### 5️⃣ **📢 Notify Job**
+- Pipeline summary generation
+- Artifact uploads
+- Notification dispatch
+
+### Environment Variables
+```yaml
+env:
+  NODE_ENV: test
+  APP_NAME: Advanced Todo List
+  DEPLOY_ENV: staging
+```
+
+### Trigger Conditions
+- **Push to `main`** - Full pipeline (test → security → build → deploy)
+- **Push to `develop`** - Test only
+- **Pull Request** - Full test matrix
+
+### View Results
+1. Go to GitHub repository → **Actions** tab
+2. Select workflow run
+3. View detailed logs for each job
+4. Download artifacts and test results
 
 ---
 
-## 🎓 Learning Outcomes
-
-By studying and using this project, you'll learn:
+## 🎓 Advanced Learning Outcomes
 
 ### Backend Development
-- ✅ Node.js & Express.js fundamentals
-- ✅ REST API design principles
-- ✅ Middleware usage
-- ✅ Error handling
-- ✅ Logging best practices
-- ✅ Configuration management
+- ✅ **Express.js Middleware** - Authentication, validation, logging
+- ✅ **REST API Design** - CRUD operations with filtering and pagination
+- ✅ **Error Handling** - Comprehensive error responses and status codes
+- ✅ **Input Validation** - Server-side validation with detailed messages
+- ✅ **Security Implementation** - Bearer token authentication
+- ✅ **Configuration Management** - Environment-based configuration
+- ✅ **Logging Strategies** - Structured logging for monitoring
 
 ### Frontend Development
-- ✅ Vanilla JavaScript (no frameworks)
-- ✅ Fetch API & async/await
-- ✅ DOM manipulation
-- ✅ CSS animations & styling
-- ✅ XSS prevention
-- ✅ User experience design
+- ✅ **Advanced JavaScript** - ES6+, async/await, fetch API
+- ✅ **State Management** - Real-time UI updates with server sync
+- ✅ **User Experience** - Loading states, error handling, responsive design
+- ✅ **Security** - XSS prevention, input sanitization
+- ✅ **Progressive Enhancement** - Works without JavaScript
 
 ### DevOps & CI/CD
-- ✅ GitHub Actions workflow syntax
-- ✅ CI/CD pipeline stages
-- ✅ Automated testing
-- ✅ Build verification
-- ✅ Security scanning
-- ✅ Deployment automation
-- ✅ Environment variables
-- ✅ Caching strategies
-- ✅ Matrix testing
+- ✅ **GitHub Actions** - Workflow syntax, matrix testing, caching
+- ✅ **Automated Testing** - Comprehensive test suites in CI
+- ✅ **Security Scanning** - Automated vulnerability detection
+- ✅ **Build Automation** - Artifact creation and deployment
+- ✅ **Environment Management** - Staging/production configurations
+- ✅ **Monitoring & Logging** - Pipeline visibility and reporting
 
-### Version Control
-- ✅ Git workflows
-- ✅ Pull requests
-- ✅ Branch management
-- ✅ Commit messages
+### Software Engineering
+- ✅ **Version Control** - Semantic versioning, release management
+- ✅ **Code Quality** - Linting, testing, security scanning
+- ✅ **Documentation** - Comprehensive API docs and README
+- ✅ **Error Scenarios** - Intentional failures for testing
+- ✅ **Scalability** - Modular architecture, separation of concerns
 
 ---
 
-## 📊 Example Workflow: Making a Change
+## 📊 Example Workflow: Complete Feature Update
 
-### Step 1: Update Version
-Edit `config.js`:
-```javascript
-version: '1.1.0',
-```
-
-### Step 2: Commit and Push
+### Step 1: Develop Feature
 ```bash
-git add config.js
-git commit -m "Bump version to 1.1.0"
-git push origin main
-```
+# Create feature branch
+git checkout -b feature/enhanced-filtering
 
-### Step 3: Watch GitHub Actions
-1. Go to GitHub repository
-2. Click **Actions** tab
-3. See workflow run through all stages:
-   - Testing on 3 Node versions ✅
-   - Build verification ✅
-   - Security scan ✅
-   - Deployment ✅
-   - Final report with new version ✅
+# Make changes to server.js, test.js, etc.
+# Add new filtering capabilities
 
-### Step 4: Check Logs
-- View console logs showing new version
-- See todo operations logged during tests
-- Confirm all 14 tests passed
-
----
-
-## 🐛 Troubleshooting
-
-### Issue: "Cannot find module 'express'"
-
-**Solution:**
-```bash
-npm install
-```
-
-### Issue: Port 3000 already in use
-
-**Solution 1:** Kill existing process
-```bash
-# Windows
-netstat -ano | findstr :3000
-taskkill /PID <PID> /F
-
-# macOS/Linux
-lsof -ti:3000 | xargs kill -9
-```
-
-**Solution 2:** Use different port
-```bash
-PORT=3001 npm start
-```
-
-### Issue: Tests not running
-
-**Ensure server is not already running**
-```bash
-# Kill any existing server first
-# Then run tests
+# Test locally
 npm test
 ```
 
-### Issue: GitHub Actions tests failing
+### Step 2: Update Version
+```javascript
+// version.js
+module.exports = "1.1.0";
+```
 
-**Check the workflow logs:**
-1. Go to Actions tab in GitHub
-2. Click on failed workflow
-3. Expand "Run Tests" step
-4. Read the error messages
-5. Common issues:
-   - Server not starting
-   - Port already in use
-   - Missing dependencies
+### Step 3: Commit and Push
+```bash
+git add .
+git commit -m "feat: Add enhanced filtering with due date sorting"
+git push origin feature/enhanced-filtering
+```
+
+### Step 4: Create Pull Request
+- GitHub will run full test matrix
+- Review code and test results
+- Merge to main branch
+
+### Step 5: Automated Deployment
+- GitHub Actions triggers full pipeline
+- Tests run on 3 Node versions
+- Security scan passes
+- Build artifacts created
+- Deployment to staging environment
+- Notifications sent
+
+### Step 6: Verify Deployment
+- Check application in staging
+- Verify new features work
+- Monitor logs and performance
+- Confirm version update in UI
 
 ---
 
-## 📚 Documentation Files
+## 🐛 Advanced Troubleshooting
 
-- **server.js** - Backend server with detailed comments
-- **config.js** - Configuration management
-- **test.js** - Comprehensive test suite documentation
-- **public/script.js** - Frontend JavaScript with JSDoc comments
-- **.github/workflows/ci.yml** - CI/CD pipeline documentation
+### Authentication Issues
+```bash
+# Test authentication
+curl -H "Authorization: Bearer 123456" http://localhost:3000/todos
+# Should return 200 with todos array
+
+curl http://localhost:3000/todos
+# Should return 401 Unauthorized
+```
+
+### Version Display Issues
+```javascript
+// Check version.js
+console.log(require('./version')); // Should print current version
+
+// Check config.js imports version correctly
+const config = require('./config');
+console.log(config.version); // Should match version.js
+```
+
+### Test Failures
+```bash
+# Run tests with verbose output
+npm test
+
+# Check server is not running on port 3000
+netstat -ano | findstr :3000
+
+# Kill existing server if needed
+taskkill /PID <PID> /F
+```
+
+### CI/CD Issues
+1. **Tests failing in GitHub Actions:**
+   - Check workflow logs in Actions tab
+   - Verify Node.js version compatibility
+   - Check for missing dependencies
+
+2. **Security scan failing:**
+   - Run `npm audit` locally
+   - Update vulnerable packages
+   - Review security advisories
+
+3. **Deployment failing:**
+   - Check environment variables
+   - Verify build artifacts
+   - Review deployment logs
 
 ---
 
-## 🎯 Next Steps
+## 🚀 Production Deployment
 
-After understanding this project:
+### Environment Variables
+```bash
+NODE_ENV=production
+PORT=3000
+AUTH_TOKEN=your-secure-token
+```
 
-1. **Extend the API**
-   - Add database (MongoDB, PostgreSQL)
-   - Add user authentication
-   - Add todo categories/tags
+### Docker Deployment
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+EXPOSE 3000
+CMD ["npm", "start"]
+```
 
-2. **Improve Testing**
-   - Add more comprehensive tests
-   - Implement code coverage
-   - Add performance tests
+### Cloud Deployment
+- **Heroku**: `git push heroku main`
+- **Railway**: Connect GitHub repository
+- **Render**: Connect GitHub repository
+- **AWS/GCP/Azure**: Use containerized deployment
 
-3. **Enhance CI/CD**
-   - Add Docker containerization
-   - Deploy to cloud (AWS, Azure, Heroku)
-   - Add canary deployments
-   - Implement blue-green deployments
+---
 
-4. **Scale the Application**
-   - Add microservices
-   - Implement message queues
-   - Add real-time updates with WebSockets
+## 🎯 Next Steps & Enhancements
+
+### Immediate Improvements
+1. **Database Integration** - Replace in-memory storage with MongoDB/PostgreSQL
+2. **User Authentication** - JWT-based user management
+3. **Real-time Updates** - WebSocket integration for live updates
+4. **API Documentation** - Swagger/OpenAPI specification
+
+### Advanced Features
+1. **Categories & Tags** - Organize todos with labels
+2. **Due Date Reminders** - Email/SMS notifications
+3. **Collaboration** - Multi-user todo sharing
+4. **Analytics** - Usage statistics and insights
+5. **Mobile App** - React Native companion app
+
+### DevOps Enhancements
+1. **Docker Containerization** - Complete container setup
+2. **Kubernetes** - Orchestration for scaling
+3. **Monitoring** - Application performance monitoring
+4. **Load Testing** - Performance and stress testing
+5. **Multi-environment** - Dev/Staging/Prod pipelines
+
+---
+
+## 📚 Documentation & Resources
+
+- **API Documentation** - Complete endpoint reference above
+- **Testing Guide** - Comprehensive test suite documentation
+- **CI/CD Pipeline** - GitHub Actions workflow details
+- **Security Guide** - Authentication and validation patterns
+- **Deployment Guide** - Production deployment strategies
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add comprehensive tests
+5. Update documentation
+6. Create a pull request
+7. Wait for CI/CD pipeline to pass
+
+---
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+---
+
+**🎉 Happy coding! Build amazing applications with confidence using this advanced Todo List application with enterprise-grade CI/CD!**
 
 ---
 

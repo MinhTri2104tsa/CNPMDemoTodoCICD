@@ -1,22 +1,32 @@
 // ==========================================
-// TODO LIST APPLICATION - Frontend Script
+// ADVANCED TODO LIST APPLICATION - Frontend Script
 // ==========================================
-// Uses Fetch API and async/await
-// Handles all frontend logic and UI updates
+// Enhanced with status tracking, due dates, filtering, and stats
+// Uses Fetch API and async/await with Bearer token auth
 // ==========================================
 
-// API Base URL
-const API_URL = 'http://localhost:3000/todos';
-const STATUS_URL = 'http://localhost:3000/status';
+// API Configuration
+const API_BASE_URL = 'http://localhost:3000';
+const API_URL = `${API_BASE_URL}/todos`;
+const STATUS_URL = `${API_BASE_URL}/status`;
+const STATS_URL = `${API_BASE_URL}/stats`;
+const AUTH_HEADER = 'Bearer 123456';
 
 // DOM Elements
 const todoInput = document.getElementById('todoInput');
+const statusSelect = document.getElementById('statusSelect');
+const dueDateInput = document.getElementById('dueDateInput');
 const addBtn = document.getElementById('addBtn');
+const filterStatus = document.getElementById('filterStatus');
+const filterKeyword = document.getElementById('filterKeyword');
+const clearFiltersBtn = document.getElementById('clearFiltersBtn');
 const todoList = document.getElementById('todoList');
 const emptyMessage = document.getElementById('emptyMessage');
 const loadingIndicator = document.getElementById('loadingIndicator');
 const totalTodosSpan = document.getElementById('totalTodos');
-const completedTodosSpan = document.getElementById('completedTodos');
+const pendingTodosSpan = document.getElementById('pendingTodos');
+const inProgressTodosSpan = document.getElementById('inProgressTodos');
+const doneTodosSpan = document.getElementById('doneTodos');
 const appVersionSpan = document.getElementById('appVersion');
 const appStatusSpan = document.getElementById('appStatus');
 
@@ -34,6 +44,11 @@ todoInput.addEventListener('keypress', (e) => {
   }
 });
 
+// Filter event listeners
+filterStatus.addEventListener('change', handleFilterChange);
+filterKeyword.addEventListener('input', handleFilterChange);
+clearFiltersBtn.addEventListener('click', clearFilters);
+
 // ==========================================
 // MAIN FUNCTIONS
 // ==========================================
@@ -44,8 +59,12 @@ todoInput.addEventListener('keypress', (e) => {
 async function loadTodos() {
   try {
     showLoading(true);
-    const response = await fetch(API_URL);
-    
+    const response = await fetch(API_URL, {
+      headers: {
+        'Authorization': AUTH_HEADER
+      }
+    });
+
     if (!response.ok) {
       throw new Error('Failed to load todos');
     }
@@ -62,61 +81,135 @@ async function loadTodos() {
 }
 
 /**
+ * Load stats from server
+ */
+async function loadStats() {
+  try {
+    const response = await fetch(STATS_URL, {
+      headers: {
+        'Authorization': AUTH_HEADER
+      }
+    });
+
+    if (response.ok) {
+      const stats = await response.json();
+      updateStatsDisplay(stats);
+    }
+  } catch (error) {
+    console.error('Error loading stats:', error);
+  }
+}
+
+/**
  * Handle adding a new todo
  */
 async function handleAddTodo() {
-  const text = todoInput.value.trim();
+  const title = todoInput.value.trim();
+  const status = statusSelect.value;
+  const dueDate = dueDateInput.value;
 
   // Validate input
-  if (!text) {
-    alert('Please enter a todo text');
+  if (!title) {
+    alert('Please enter a todo title');
     return;
   }
 
   try {
     showLoading(true);
+    const todoData = {
+      title: title,
+      status: status
+    };
+
+    if (dueDate) {
+      todoData.dueDate = dueDate;
+    }
+
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': AUTH_HEADER
       },
-      body: JSON.stringify({ text: text })
+      body: JSON.stringify(todoData)
     });
 
     if (!response.ok) {
-      throw new Error('Failed to create todo');
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to create todo');
     }
 
     const newTodo = await response.json();
-    
-    // Clear input field
+
+    // Clear input fields
     todoInput.value = '';
+    dueDateInput.value = '';
+    statusSelect.value = 'pending';
     todoInput.focus();
 
-    // Reload todos
+    // Reload todos and stats
     await loadTodos();
+    await loadStats();
   } catch (error) {
     console.error('Error adding todo:', error);
-    alert('Failed to add todo. Please try again.');
+    alert(`Failed to add todo: ${error.message}`);
   } finally {
     showLoading(false);
   }
 }
 
 /**
- * Handle toggling todo completion status
+ * Handle updating todo status
  * @param {number} id - Todo ID
- * @param {boolean} completed - New completion status
+ * @param {string} newStatus - New status
  */
-async function handleToggleTodo(id, completed) {
+async function handleUpdateStatus(id, newStatus) {
   try {
     showLoading(true);
     const response = await fetch(`${API_URL}/${id}`, {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': AUTH_HEADER
       },
-      body: JSON.stringify({ completed: !completed })
+      body: JSON.stringify({ status: newStatus })
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to update todo');
+    }
+
+    // Reload todos and stats
+    await loadTodos();
+    await loadStats();
+  } catch (error) {
+    console.error('Error updating todo:', error);
+    alert('Failed to update todo. Please try again.');
+  } finally {
+    showLoading(false);
+  }
+}
+
+/**
+ * Handle updating todo title
+ * @param {number} id - Todo ID
+ * @param {string} newTitle - New title
+ */
+async function handleUpdateTitle(id, newTitle) {
+  if (!newTitle.trim()) {
+    alert('Title cannot be empty');
+    return;
+  }
+
+  try {
+    showLoading(true);
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': AUTH_HEADER
+      },
+      body: JSON.stringify({ title: newTitle.trim() })
     });
 
     if (!response.ok) {
@@ -145,15 +238,19 @@ async function handleDeleteTodo(id) {
   try {
     showLoading(true);
     const response = await fetch(`${API_URL}/${id}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: {
+        'Authorization': AUTH_HEADER
+      }
     });
 
     if (!response.ok) {
       throw new Error('Failed to delete todo');
     }
 
-    // Reload todos
+    // Reload todos and stats
     await loadTodos();
+    await loadStats();
   } catch (error) {
     console.error('Error deleting todo:', error);
     alert('Failed to delete todo. Please try again.');
@@ -162,27 +259,64 @@ async function handleDeleteTodo(id) {
   }
 }
 
+/**
+ * Handle filter changes
+ */
+function handleFilterChange() {
+  loadTodos();
+}
+
+/**
+ * Clear all filters
+ */
+function clearFilters() {
+  filterStatus.value = '';
+  filterKeyword.value = '';
+  loadTodos();
+}
+
 // ==========================================
 // UI RENDERING FUNCTIONS
 // ==========================================
 
 /**
- * Render todos list in DOM
+ * Render todos list in DOM with filtering
  * @param {Array} todos - Array of todo objects
  */
 function renderTodos(todos) {
+  // Apply filters
+  const statusFilter = filterStatus.value;
+  const keywordFilter = filterKeyword.value.toLowerCase();
+
+  let filteredTodos = todos;
+
+  if (statusFilter) {
+    filteredTodos = filteredTodos.filter(todo => todo.status === statusFilter);
+  }
+
+  if (keywordFilter) {
+    filteredTodos = filteredTodos.filter(todo =>
+      todo.title.toLowerCase().includes(keywordFilter)
+    );
+  }
+
   // Clear existing todos
   todoList.innerHTML = '';
 
-  if (todos.length === 0) {
+  if (filteredTodos.length === 0) {
     // Show empty message
     emptyMessage.classList.remove('hidden');
+    if (todos.length === 0) {
+      emptyMessage.innerHTML = '<p>📭 No todos yet. Add one to get started!</p>';
+    } else {
+      emptyMessage.innerHTML = '<p>🔍 No todos match your filters.</p>';
+    }
   } else {
     // Hide empty message
     emptyMessage.classList.add('hidden');
 
     // Render each todo
-    todos.forEach(todo => {
+    filteredTodos.forEach(todo => {
       const todoElement = createTodoElement(todo);
       todoList.appendChild(todoElement);
     });
@@ -196,30 +330,76 @@ function renderTodos(todos) {
  */
 function createTodoElement(todo) {
   const div = document.createElement('div');
-  div.className = `todo-item ${todo.completed ? 'completed' : ''}`;
+  div.className = `todo-item status-${todo.status}`;
+
+  const statusOptions = [
+    { value: 'pending', label: 'Pending', color: '#ffa726' },
+    { value: 'in-progress', label: 'In Progress', color: '#42a5f5' },
+    { value: 'done', label: 'Done', color: '#66bb6a' }
+  ];
+
+  const currentStatus = statusOptions.find(s => s.value === todo.status);
+  const statusColor = currentStatus ? currentStatus.color : '#999';
+
+  const dueDateDisplay = todo.dueDate ? formatDate(todo.dueDate) : 'No due date';
+  const isOverdue = todo.dueDate && new Date(todo.dueDate) < new Date() && todo.status !== 'done';
+
   div.innerHTML = `
-    <input 
-      type="checkbox" 
-      class="todo-checkbox" 
-      ${todo.completed ? 'checked' : ''}
-      onchange="handleToggleTodo(${todo.id}, ${todo.completed})"
-    >
-    <span class="todo-text">${escapeHtml(todo.text)}</span>
-    <button class="btn-delete" onclick="handleDeleteTodo(${todo.id})">Delete</button>
+    <div class="todo-header">
+      <span class="todo-title" contenteditable="true" onblur="handleUpdateTitle(${todo.id}, this.textContent)">${escapeHtml(todo.title)}</span>
+      <div class="todo-actions">
+        <select class="status-dropdown" onchange="handleUpdateStatus(${todo.id}, this.value)" style="background-color: ${statusColor}">
+          ${statusOptions.map(option =>
+            `<option value="${option.value}" ${option.value === todo.status ? 'selected' : ''}>${option.label}</option>`
+          ).join('')}
+        </select>
+        <button class="btn-delete" onclick="handleDeleteTodo(${todo.id})">🗑️</button>
+      </div>
+    </div>
+    <div class="todo-details">
+      <div class="todo-meta">
+        <small class="todo-date">Created: ${formatDate(todo.createdAt)}</small>
+        <small class="todo-due ${isOverdue ? 'overdue' : ''}">Due: ${dueDateDisplay}</small>
+      </div>
+      ${todo.history && todo.history.length > 0 ? `
+        <div class="todo-history">
+          <small>History: ${todo.history.length} change${todo.history.length > 1 ? 's' : ''}</small>
+        </div>
+      ` : ''}
+    </div>
   `;
+
   return div;
 }
 
 /**
- * Update stats (total and completed count)
+ * Update stats display from server stats
+ * @param {Object} stats - Stats object from server
+ */
+function updateStatsDisplay(stats) {
+  totalTodosSpan.textContent = stats.total || 0;
+  pendingTodosSpan.textContent = stats.pending || 0;
+  inProgressTodosSpan.textContent = stats.inProgress || 0;
+  doneTodosSpan.textContent = stats.done || 0;
+}
+
+/**
+ * Update stats (fallback local calculation)
  * @param {Array} todos - Array of todo objects
  */
 function updateStats(todos) {
+  // This is a fallback - we prefer server stats
+  if (!todos) return;
+
   const total = todos.length;
-  const completed = todos.filter(t => t.completed).length;
-  
+  const pending = todos.filter(t => t.status === 'pending').length;
+  const inProgress = todos.filter(t => t.status === 'in-progress').length;
+  const done = todos.filter(t => t.status === 'done').length;
+
   totalTodosSpan.textContent = total;
-  completedTodosSpan.textContent = completed;
+  pendingTodosSpan.textContent = pending;
+  inProgressTodosSpan.textContent = inProgress;
+  doneTodosSpan.textContent = done;
 }
 
 /**
@@ -232,6 +412,21 @@ function showLoading(show) {
   } else {
     loadingIndicator.classList.add('hidden');
   }
+}
+
+/**
+ * Format date for display
+ * @param {string} dateString - ISO date string
+ * @returns {string} - Formatted date
+ */
+function formatDate(dateString) {
+  if (!dateString) return 'N/A';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
 }
 
 /**
@@ -259,21 +454,20 @@ async function loadAppVersion() {
     const response = await fetch(STATUS_URL);
     if (response.ok) {
       const status = await response.json();
-      
+
       // Update version display in header
       if (appVersionSpan) {
         appVersionSpan.textContent = `v${status.version}`;
         console.log(`📍 App Version: ${status.version}`);
       }
-      
+
       // Update status display in footer
       if (appStatusSpan) {
         appStatusSpan.textContent = status.status;
         console.log(`✅ App Status: ${status.status}`);
       }
-      
-      // Log environment info
-      console.log(`🌍 Environment: ${status.environment}`);
+
+      // Log timestamp
       console.log(`⏱️  Timestamp: ${status.timestamp}`);
     } else {
       console.warn('Failed to fetch app version');
@@ -293,13 +487,14 @@ async function loadAppVersion() {
 // INITIALIZATION
 // ==========================================
 
-// Load todos when page loads
+// Load data when page loads
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('🚀 Todo List Application loaded');
-  
+  console.log('🚀 Advanced Todo List Application loaded');
+
   // Fetch app version and status
   loadAppVersion();
-  
-  // Load todos list
+
+  // Load todos and stats
   loadTodos();
+  loadStats();
 });
