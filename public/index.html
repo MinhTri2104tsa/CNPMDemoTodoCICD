@@ -12,6 +12,10 @@
         <header class="header">
             <h1>📝 My Todo List</h1>
             <p class="subtitle">Stay organized and productive</p>
+            <!-- Version Display -->
+            <div class="version-info">
+                <small id="appVersion">v1.0.0 (loading...)</small>
+            </div>
         </header>
 
         <!-- Input Section -->
@@ -43,8 +47,14 @@
         </section>
 
         <!-- Stats Section -->
-        <footer class="stats">
+        <section class="stats">
             <p>Total: <span id="totalTodos">0</span> | Completed: <span id="completedTodos">0</span></p>
+        </section>
+
+        <!-- Footer with Version Info -->
+        <footer class="footer">
+            <p>Todo List Application | Status: <span id="appStatus">checking...</span></p>
+            <small>Built with Node.js + Express</small>
         </footer>
     </div>
 

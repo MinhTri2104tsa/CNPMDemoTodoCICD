@@ -1,16 +1,27 @@
 {
   "name": "todo-demo",
   "version": "1.0.0",
-  "description": "Complete Todo List web application with CI/CD",
+  "description": "Complete Todo List web application with CI/CD using GitHub Actions. Demonstrates modern DevOps practices.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "echo 'Running tests' && exit 0"
+    "test": "node server.js & sleep 2 && node test.js",
+    "dev": "node server.js"
   },
-  "keywords": ["todo", "express", "nodejs"],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "todo",
+    "express",
+    "nodejs",
+    "cicd",
+    "github-actions",
+    "devops"
+  ],
+  "author": "DevOps Demo",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
   }
 }

@@ -7,6 +7,7 @@
 
 // API Base URL
 const API_URL = 'http://localhost:3000/todos';
+const STATUS_URL = 'http://localhost:3000/status';
 
 // DOM Elements
 const todoInput = document.getElementById('todoInput');
@@ -16,6 +17,8 @@ const emptyMessage = document.getElementById('emptyMessage');
 const loadingIndicator = document.getElementById('loadingIndicator');
 const totalTodosSpan = document.getElementById('totalTodos');
 const completedTodosSpan = document.getElementById('completedTodos');
+const appVersionSpan = document.getElementById('appVersion');
+const appStatusSpan = document.getElementById('appStatus');
 
 // ==========================================
 // EVENT LISTENERS
@@ -247,6 +250,45 @@ function escapeHtml(text) {
   return text.replace(/[&<>"']/g, m => map[m]);
 }
 
+/**
+ * Fetch and display application version and status
+ * Uses GET /status endpoint to get version info
+ */
+async function loadAppVersion() {
+  try {
+    const response = await fetch(STATUS_URL);
+    if (response.ok) {
+      const status = await response.json();
+      
+      // Update version display in header
+      if (appVersionSpan) {
+        appVersionSpan.textContent = `v${status.version}`;
+        console.log(`📍 App Version: ${status.version}`);
+      }
+      
+      // Update status display in footer
+      if (appStatusSpan) {
+        appStatusSpan.textContent = status.status;
+        console.log(`✅ App Status: ${status.status}`);
+      }
+      
+      // Log environment info
+      console.log(`🌍 Environment: ${status.environment}`);
+      console.log(`⏱️  Timestamp: ${status.timestamp}`);
+    } else {
+      console.warn('Failed to fetch app version');
+      if (appStatusSpan) {
+        appStatusSpan.textContent = 'offline';
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching app version:', error);
+    if (appStatusSpan) {
+      appStatusSpan.textContent = 'offline';
+    }
+  }
+}
+
 // ==========================================
 // INITIALIZATION
 // ==========================================
@@ -254,5 +296,10 @@ function escapeHtml(text) {
 // Load todos when page loads
 document.addEventListener('DOMContentLoaded', () => {
   console.log('🚀 Todo List Application loaded');
+  
+  // Fetch app version and status
+  loadAppVersion();
+  
+  // Load todos list
   loadTodos();
 });

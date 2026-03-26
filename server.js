@@ -6,8 +6,19 @@
 // ==========================================
 
 const express = require('express');
+const config = require('./config');
+
 const app = express();
-const PORT = 3000;
+const PORT = config.server.port;
+
+// ==========================================
+// CUSTOM LOGGING
+// ==========================================
+// Simple logging function for CI/CD visibility
+function log(level, message) {
+  const timestamp = new Date().toISOString();
+  console.log(`[${timestamp}] [${level.toUpperCase()}] ${message}`);
+}
 
 // Middleware to parse JSON requests
 app.use(express.json());
@@ -40,6 +51,7 @@ let nextId = 1;
  * Response: Array of todo objects
  */
 app.get('/todos', (req, res) => {
+  log('info', 'GET /todos - Retrieving all todos');
   res.json(todos);
 });
 
@@ -52,6 +64,7 @@ app.get('/todos', (req, res) => {
 app.post('/todos', (req, res) => {
   // Validate input - no empty todos
   if (!req.body.text || req.body.text.trim() === '') {
+    log('warn', 'POST /todos - Invalid request: empty text');
     return res.status(400).json({ 
       error: 'Todo text cannot be empty' 
     });
@@ -68,8 +81,34 @@ app.post('/todos', (req, res) => {
   // Add to todos array
   todos.push(newTodo);
 
+  // Log the addition
+  log('info', `POST /todos - New todo created: "${newTodo.text}" (ID: ${newTodo.id})`);
+
   // Return created todo
   res.status(201).json(newTodo);
+});
+
+/**
+ * GET /status
+ * Description: Get application status and health check
+ * Response: Status object with version and timestamp
+ * IMPORTANT: For CI/CD demo - shows app is running
+ */
+app.get('/status', (req, res) => {
+  log('info', 'GET /status - Health check request');
+  
+  const status = {
+    status: config.status,
+    version: config.version,
+    appName: config.appName,
+    environment: config.environment,
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    totalTodos: todos.length
+  };
+  
+  log('info', `Status: ${JSON.stringify(status)}`);
+  res.json(status);
 });
 
 /**
@@ -84,6 +123,7 @@ app.put('/todos/:id', (req, res) => {
 
   // Handle not found
   if (!todo) {
+    log('warn', `PUT /todos/${req.params.id} - Todo not found`);
     return res.status(404).json({ 
       error: 'Todo not found' 
     });
@@ -92,6 +132,7 @@ app.put('/todos/:id', (req, res) => {
   // Update completed status
   if (typeof req.body.completed === 'boolean') {
     todo.completed = req.body.completed;
+    log('info', `PUT /todos/${req.params.id} - Todo updated: "${todo.text}" (completed: ${todo.completed})`);
   }
 
   // Return updated todo
@@ -109,6 +150,7 @@ app.delete('/todos/:id', (req, res) => {
 
   // Handle not found
   if (index === -1) {
+    log('warn', `DELETE /todos/${req.params.id} - Todo not found`);
     return res.status(404).json({ 
       error: 'Todo not found' 
     });
@@ -116,6 +158,9 @@ app.delete('/todos/:id', (req, res) => {
 
   // Remove from array
   const deletedTodo = todos.splice(index, 1);
+
+  // Log the deletion
+  log('info', `DELETE /todos/${req.params.id} - Todo deleted: "${deletedTodo[0].text}"`);
 
   // Return deleted todo
   res.json({ 
@@ -132,6 +177,7 @@ app.delete('/todos/:id', (req, res) => {
  * 404 Not Found Handler
  */
 app.use((req, res) => {
+  log('warn', `404 - Endpoint not found: ${req.method} ${req.path}`);
   res.status(404).json({ 
     error: 'Endpoint not found' 
   });
@@ -141,7 +187,7 @@ app.use((req, res) => {
  * Error Handler Middleware
  */
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  log('error', `Server error: ${err.stack}`);
   res.status(500).json({ 
     error: 'Internal server error' 
   });
@@ -152,10 +198,17 @@ app.use((err, req, res, next) => {
 // ==========================================
 
 app.listen(PORT, () => {
-  console.log(`🚀 Todo List Server is running on http://localhost:${PORT}`);
-  console.log('📝 API Documentation:');
-  console.log('  GET    /todos      - Retrieve all todos');
-  console.log('  POST   /todos      - Create new todo');
-  console.log('  PUT    /todos/:id  - Update todo status');
-  console.log('  DELETE /todos/:id  - Delete todo');
+  log('info', '═══════════════════════════════════════════════════════');
+  log('info', `🚀 ${config.appName} is running!`);
+  log('info', `📍 Server Address: http://localhost:${PORT}`);
+  log('info', `📦 Version: ${config.version}`);
+  log('info', `🌍 Environment: ${config.environment}`);
+  log('info', '═══════════════════════════════════════════════════════');
+  log('info', '📝 API Documentation:');
+  log('info', '   GET    /todos      - Retrieve all todos');
+  log('info', '   POST   /todos      - Create new todo');
+  log('info', '   PUT    /todos/:id  - Update todo status');
+  log('info', '   DELETE /todos/:id  - Delete todo');
+  log('info', '   GET    /status     - Application health check & version');
+  log('info', '═══════════════════════════════════════════════════════');
 });

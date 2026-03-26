@@ -56,6 +56,20 @@ body {
 .subtitle {
     color: #999;
     font-size: 0.95em;
+    margin-bottom: 8px;
+}
+
+/* Version Info Display */
+.version-info {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #eee;
+}
+
+.version-info small {
+    color: #999;
+    font-size: 0.8em;
+    font-weight: 500;
 }
 
 /* Input Section */
@@ -226,11 +240,10 @@ body {
     display: none;
 }
 
-/* Stats Footer */
+/* Stats Section */
 .stats {
     text-align: center;
-    padding-top: 20px;
-    border-top: 1px solid #e0e0e0;
+    padding: 20px 0;
     color: #666;
     font-size: 0.95em;
 }
@@ -238,6 +251,32 @@ body {
 .stats span {
     font-weight: 600;
     color: #667eea;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+    color: #999;
+    font-size: 0.85em;
+    margin-top: 20px;
+}
+
+.footer p {
+    margin-bottom: 5px;
+}
+
+.footer small {
+    display: block;
+    font-size: 0.8em;
+    margin-top: 8px;
+}
+
+#appStatus {
+    font-weight: 600;
+    color: #27ae60;
+    padding: 0 4px;
 }
 
 /* Responsive Design */
