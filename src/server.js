@@ -1,9 +1,3 @@
-// ==========================================
-// ADVANCED TODO LIST API - Backend Server
-// ==========================================
-// Node.js server using Express framework
-// Enhanced with authentication, advanced todo model, and CI/CD features
-// ==========================================
 
 const express = require('express');
 const config = require('./config');
@@ -12,19 +6,12 @@ const version = require('./version');
 const app = express();
 const PORT = config.server.port;
 
-// ==========================================
-// CUSTOM LOGGING
-// ==========================================
-// Structured logging for CI/CD visibility
+
 function log(level, message) {
   const timestamp = new Date().toISOString();
   console.log(`[${timestamp}] [${level.toUpperCase()}] ${message}`);
 }
 
-// ==========================================
-// FAKE AUTHENTICATION MIDDLEWARE
-// ==========================================
-// Simple authentication for demo purposes
 function authenticate(req, res, next) {
   const authHeader = req.headers.authorization;
 
@@ -49,11 +36,6 @@ function authenticate(req, res, next) {
   next();
 }
 
-// ==========================================
-// MIDDLEWARE
-// ==========================================
-
-// Parse JSON requests
 app.use(express.json());
 
 // CORS middleware - allow requests from any origin
@@ -407,7 +389,7 @@ app.use((req, res) => {
 /**
  * Global Error Handler Middleware
  */
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   log('ERROR', `Server error: ${err.message}`);
   res.status(500).json({
     error: 'Internal server error',

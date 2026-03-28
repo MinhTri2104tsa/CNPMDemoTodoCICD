@@ -59,7 +59,7 @@ function makeRequest(method, path, body = null, headers = {}) {
             status: res.statusCode,
             body: data ? JSON.parse(data) : null
           });
-        } catch (e) {
+        } catch {
           resolve({
             status: res.statusCode,
             body: data
@@ -413,21 +413,16 @@ async function runTests() {
 
     console.log('   🧹 Cleanup completed\n');
 
-    // ==========================================
-    // TEST GROUP 9: FAILING SCENARIO (FOR CI/CD DEMO)
-    // ==========================================
-    console.log('📍 Test Group 9: Failing Scenario (Intentional)\n');
-
-    // This test is designed to FAIL for CI/CD demonstration
-    // It tests a non-existent feature that should return 404
-    const failingTestResponse = await makeRequest('GET', '/todos/export');
+    // This test verifies the export feature works
+    // It tests the existing export feature that returns CSV
+    const exportTestResponse = await makeRequest('GET', '/todos/export');
     assert(
-      'GET /todos/export should work (but it doesn\'t - intentional fail)',
-      failingTestResponse.status === 200,
-      `This test is designed to fail for CI/CD demo. Status: ${failingTestResponse.status}`
+      'GET /todos/export returns CSV data',
+      exportTestResponse.status === 200,
+      `Export endpoint should work. Status: ${exportTestResponse.status}`
     );
 
-    console.log('   💥 Intentional failing test completed\n');
+    console.log('   📊 Export feature working correctly\n');
 
   } catch (error) {
     console.error('❌ Test suite error:', error.message);

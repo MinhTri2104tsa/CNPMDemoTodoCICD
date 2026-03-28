@@ -5,8 +5,10 @@
 // Uses Fetch API and async/await with Bearer token auth
 // ==========================================
 
+/* eslint-disable no-unused-vars */
+
 // API Configuration
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = window.location.origin;
 const API_URL = `${API_BASE_URL}/todos`;
 const STATUS_URL = `${API_BASE_URL}/status`;
 const STATS_URL = `${API_BASE_URL}/stats`;
@@ -138,8 +140,6 @@ async function handleAddTodo() {
       const error = await response.json();
       throw new Error(error.message || 'Failed to create todo');
     }
-
-    const newTodo = await response.json();
 
     // Clear input fields
     todoInput.value = '';

@@ -1,14 +1,3 @@
-# ==========================================
-# ADVANCED TODO LIST - CI/CD PIPELINE
-# ==========================================
-# GitHub Actions workflow with:
-# - Matrix testing (Node.js versions)
-# - Caching for dependencies
-# - Environment variables
-# - Test execution with failure demo
-# - Deployment simulation
-# ==========================================
-
 name: Advanced Todo List CI/CD
 
 on:
@@ -17,69 +6,50 @@ on:
   pull_request:
     branches: [main]
 
-# Environment variables for the workflow
 env:
-  NODE_ENV: test
+  NODE_VERSION: "20.x"
   APP_NAME: Advanced Todo List
   DEPLOY_ENV: staging
 
+# Hủy run cũ nếu có run mới trên cùng nhánh
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   # ==========================================
-  # TEST JOB - Matrix testing with multiple Node versions
+  # TEST + SECURITY (chạy song song)
   # ==========================================
   test:
     name: Test (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
-
-    # Matrix strategy for testing multiple Node.js versions
     strategy:
       matrix:
-        node-version: [16.x, 18.x, 20.x]
-      fail-fast: false # Continue testing other versions if one fails
-
+        # Bỏ 16.x (đã EOL), giữ 18.x và 20.x
+        node-version: [18.x, 20.x]
+      fail-fast: false
     steps:
-      # ==========================================
-      # CHECKOUT CODE
-      # ==========================================
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # ==========================================
-      # SETUP NODE.JS WITH CACHING
-      # ==========================================
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "npm" # Cache npm dependencies
+          cache: npm
 
-      # ==========================================
-      # INSTALL DEPENDENCIES
-      # ==========================================
-      - name: Install dependencies
-        run: npm ci # Use ci for faster, reliable installs
+      - run: npm ci
 
-      # ==========================================
-      # LINT CODE (if eslint is configured)
-      # ==========================================
-      - name: Run linting
-        run: npm run lint || echo "No lint script found, skipping..."
+      - name: Lint
+        run: npm run lint --if-present
 
-      # ==========================================
-      # RUN TESTS
-      # ==========================================
-      - name: Run tests
-        run: npm test
+      - name: Test
+        run: npm run test:unix
         env:
           CI: true
-          TEST_ENV: matrix-${{ matrix.node-version }}
 
-      # ==========================================
-      # UPLOAD TEST RESULTS (if available)
-      # ==========================================
       - name: Upload test results
-        uses: actions/upload-artifact@v4
         if: always()
+        uses: actions/upload-artifact@v4
         with:
           name: test-results-node-${{ matrix.node-version }}
           path: |
@@ -87,236 +57,115 @@ jobs:
             *.log
           retention-days: 7
 
-  # ==========================================
-  # SECURITY SCAN JOB
-  # ==========================================
   security:
     name: Security Scan
     runs-on: ubuntu-latest
-    needs: test
-
+    # Chạy SONG SONG với test, không cần đợi
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18.x
-          cache: "npm"
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
 
-      - name: Install dependencies
-        run: npm ci
+      - run: npm ci
 
-      # ==========================================
-      # SECURITY AUDIT
-      # ==========================================
-      - name: Run security audit
+      - name: Audit (moderate+)
         run: npm audit --audit-level moderate
-        continue-on-error: true # Don't fail on warnings
+        continue-on-error: true
 
-      # ==========================================
-      # DEPENDENCY CHECK
-      # ==========================================
-      - name: Check for vulnerabilities
-        run: |
-          if npm audit --audit-level high; then
-            echo "✅ No high-severity vulnerabilities found"
-          else
-            echo "⚠️  Vulnerabilities found - review dependencies"
-            npm audit --audit-level high || true
-          fi
+      - name: Fail on high severity
+        run: npm audit --audit-level high
 
   # ==========================================
-  # BUILD JOB
+  # BUILD — chờ cả test lẫn security
   # ==========================================
   build:
-    name: Build Application
+    name: Build
     runs-on: ubuntu-latest
     needs: [test, security]
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18.x
-          cache: "npm"
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
 
-      - name: Install dependencies
-        run: npm ci
+      - run: npm ci
 
-      # ==========================================
-      # BUILD APPLICATION
-      # ==========================================
-      - name: Build application
-        run: |
-          # Create production build
-          echo "Building application for production..."
-          npm run build || echo "No build script found, skipping..."
+      - name: Build
+        run: npm run build --if-present
 
-      # ==========================================
-      # CREATE ARTIFACTS
-      # ==========================================
-      - name: Create build artifacts
+      - name: Collect artifacts
         run: |
           mkdir -p dist
-          cp -r public/* dist/ 2>/dev/null || true
-          cp package*.json dist/ 2>/dev/null || true
-          cp server.js dist/ 2>/dev/null || true
-          cp version.js dist/ 2>/dev/null || true
-          cp config.js dist/ 2>/dev/null || true
+          for f in public src/server.js src/version.js src/config.js; do
+            [ -e "$f" ] && cp -r "$f" dist/ || true
+          done
+          cp package*.json dist/
 
-      # ==========================================
-      # UPLOAD BUILD ARTIFACTS
-      # ==========================================
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
           path: dist/
           retention-days: 30
 
   # ==========================================
-  # DEPLOY JOB (SIMULATION)
+  # DEPLOY — chỉ từ nhánh main
   # ==========================================
   deploy:
-    name: Deploy to ${ env.DEPLOY_ENV }
+    name: Deploy to staging
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/main' # Only deploy from main branch
-
-    environment: ${ env.DEPLOY_ENV }
-
+    if: github.ref == 'refs/heads/main'
     steps:
-      # ==========================================
-      # CHECKOUT CODE
-      # ==========================================
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # ==========================================
-      # DOWNLOAD BUILD ARTIFACTS
-      # ==========================================
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
           name: build-artifacts
           path: deploy/
 
-      # ==========================================
-      # DEPLOYMENT SIMULATION
-      # ==========================================
-      - name: Deploy to ${{ env.DEPLOY_ENV }}
+      - name: Simulate deploy
         run: |
-          echo "🚀 Starting deployment to ${{ env.DEPLOY_ENV }}..."
-          echo "📦 Application: ${{ env.APP_NAME }}"
-          echo "🌐 Environment: ${{ env.DEPLOY_ENV }}"
-          echo "📅 Timestamp: $(date)"
-
-          # List deployed files
-          echo "📁 Deployed files:"
+          echo "Deploying ${{ env.APP_NAME }} to staging..."
+          echo "Commit: ${{ github.sha }}"
+          echo "Files:"
           ls -la deploy/
+          echo "Deploy simulation completed."
 
-          # Simulate deployment steps
-          echo "✅ Copying files to server..."
-          sleep 2
-
-          echo "🔄 Restarting application service..."
-          sleep 1
-
-          echo "🧪 Running health checks..."
-          sleep 1
-
-          echo "🎉 Deployment completed successfully!"
-          echo "🌐 Application available at: https://todo-app-${{ env.DEPLOY_ENV }}.example.com"
-
-      # ==========================================
-      # POST-DEPLOYMENT HEALTH CHECK
-      # ==========================================
       - name: Health check
         run: |
-          echo "🔍 Performing post-deployment health check..."
-          # In a real scenario, this would curl the deployed application
-          echo "✅ Health check passed - application is running"
+          echo "Health check passed"
+          # curl --fail https://todo-app-${{ env.DEPLOY_ENV }}.example.com/health
 
   # ==========================================
-  # NOTIFICATION JOB
+  # NOTIFY — luôn chạy, tóm tắt toàn bộ
   # ==========================================
   notify:
-    name: Send Notifications
+    name: Notify
     runs-on: ubuntu-latest
     needs: [test, security, build, deploy]
-    if: always() # Run even if previous jobs failed
-
+    if: always()
     steps:
-      - name: Generate deployment summary
+      - name: Pipeline summary
         run: |
-          echo "## 🚀 CI/CD Pipeline Summary" >> summary.md
-          echo "" >> summary.md
-          echo "### Build Information" >> summary.md
-          echo "- **Application:** ${{ env.APP_NAME }}" >> summary.md
-          echo "- **Branch:** ${{ github.ref_name }}" >> summary.md
-          echo "- **Commit:** ${{ github.sha }}" >> summary.md
-          echo "- **Triggered by:** ${{ github.actor }}" >> summary.md
-          echo "" >> summary.md
+          cat <<'EOF' >> $GITHUB_STEP_SUMMARY
+          ## CI/CD Summary — ${{ env.APP_NAME }}
 
-          echo "### Test Results" >> summary.md
-          if [ "${{ needs.test.result }}" = "success" ]; then
-            echo "✅ **Tests:** All passed" >> summary.md
-          else
-            echo "❌ **Tests:** Some failed" >> summary.md
-          fi
-          echo "" >> summary.md
+          | Job       | Status |
+          |-----------|--------|
+          | Test      | ${{ needs.test.result }} |
+          | Security  | ${{ needs.security.result }} |
+          | Build     | ${{ needs.build.result }} |
+          | Deploy    | ${{ needs.deploy.result }} |
 
-          echo "### Security Scan" >> summary.md
-          if [ "${{ needs.security.result }}" = "success" ]; then
-            echo "✅ **Security:** Passed" >> summary.md
-          else
-            echo "⚠️  **Security:** Issues found" >> summary.md
-          fi
-          echo "" >> summary.md
+          **Branch:** `${{ github.ref_name }}` · **Commit:** `${{ github.sha }}` · **By:** @${{ github.actor }}
+          EOF
 
-          echo "### Deployment" >> summary.md
-          if [ "${{ needs.deploy.result }}" = "success" ]; then
-            echo "✅ **Deployment:** Successful" >> summary.md
-            echo "🌐 **URL:** https://todo-app-${{ env.DEPLOY_ENV }}.example.com" >> summary.md
-          elif [ "${{ needs.deploy.result }}" = "skipped" ]; then
-            echo "⏭️  **Deployment:** Skipped (not main branch)" >> summary.md
-          else
-            echo "❌ **Deployment:** Failed" >> summary.md
-          fi
-          echo "" >> summary.md
-
-          echo "### 📊 Pipeline Status" >> summary.md
-          if [ "${{ job.status }}" = "success" ]; then
-            echo "🎉 **Overall:** Pipeline completed successfully" >> summary.md
-          else
-            echo "💥 **Overall:** Pipeline failed" >> summary.md
-          fi
-
-          cat summary.md
-
-      # ==========================================
-      # UPLOAD SUMMARY
-      # ==========================================
-      - name: Upload pipeline summary
-        uses: actions/upload-artifact@v4
-        with:
-          name: pipeline-summary
-          path: summary.md
-          retention-days: 30
-
-      # ==========================================
-      # DISCORD NOTIFICATION (EXAMPLE)
-      # ==========================================
-      - name: Send Discord notification
+      # Placeholder: thay bằng Discord/Slack webhook thật nếu cần
+      - name: Discord notification (placeholder)
         if: always()
-        run: |
-          # This is a placeholder for Discord webhook integration
-          # In a real scenario, you would use a webhook to send notifications
-          echo "📢 Discord notification would be sent here"
-          echo "Pipeline status: ${{ job.status }}"
-          echo "Check the GitHub Actions tab for detailed results"
+        run: echo "Send webhook here — status=${{ job.status }}"

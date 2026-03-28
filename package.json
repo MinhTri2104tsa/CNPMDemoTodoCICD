@@ -2,12 +2,12 @@
   "name": "todo-demo",
   "version": "1.0.0",
   "description": "Complete Todo List web application with CI/CD using GitHub Actions. Demonstrates modern DevOps practices.",
-  "main": "server.js",
+  "main": "src/server.js",
   "scripts": {
-    "start": "node server.js",
-    "test": "start /B node server.js && timeout /t 3 /nobreak >nul && node test.js",
-    "test:unix": "node server.js & sleep 2 && node test.js",
-    "dev": "node server.js"
+    "start": "node src/server.js",
+    "test": "start /B node src/server.js && timeout /t 3 /nobreak >nul && node tests/test.js",
+    "test:unix": "node src/server.js & sleep 2 && node tests/test.js",
+    "dev": "node src/server.js"
   },
   "keywords": [
     "todo",
@@ -24,5 +24,8 @@
   },
   "engines": {
     "node": ">=14.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^10.1.0"
   }
 }

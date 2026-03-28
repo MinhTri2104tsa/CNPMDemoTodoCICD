@@ -43,10 +43,12 @@ A **production-ready, enterprise-grade Todo List web application** with **compre
 
 ```
 TodoDemo/
-├── version.js             # Centralized version management
-├── server.js              # Advanced Express.js backend server
-├── config.js              # Configuration & version management
-├── test.js                # Comprehensive API test suite with auth
+├── src/
+│   ├── version.js         # Centralized version management
+│   ├── server.js          # Advanced Express.js backend server
+│   └── config.js          # Configuration & version management
+├── tests/
+│   └── test.js            # Comprehensive API test suite with auth
 ├── package.json           # Dependencies & scripts
 ├── .github/
 │   └── workflows/
@@ -379,26 +381,26 @@ npm test
 ### Current Version System
 The application uses centralized version management:
 
-**version.js:**
+**src/version.js:**
 ```javascript
 module.exports = "1.0.0";
 ```
 
-**config.js:**
+**src/config.js:**
 ```javascript
 const version = require('./version');
-// Version is now imported from version.js
+// Version is now imported from src/version.js
 ```
 
 ### Updating Version
-1. Edit `version.js`:
+1. Edit `src/version.js`:
    ```javascript
    module.exports = "1.1.0";
    ```
 
 2. Commit and push:
    ```bash
-   git add version.js
+   git add src/version.js
    git commit -m "Bump version to 1.1.0"
    git push origin main
    ```
@@ -464,6 +466,9 @@ env:
   DEPLOY_ENV: staging
 ```
 
+### Local .env Example
+The repository includes a sample environment file at `.env.example` for local development.
+
 ### Trigger Conditions
 - **Push to `main`** - Full pipeline (test → security → build → deploy)
 - **Push to `develop`** - Test only
@@ -519,7 +524,7 @@ env:
 # Create feature branch
 git checkout -b feature/enhanced-filtering
 
-# Make changes to server.js, test.js, etc.
+# Make changes to src/server.js, tests/test.js, etc.
 # Add new filtering capabilities
 
 # Test locally
@@ -528,7 +533,7 @@ npm test
 
 ### Step 2: Update Version
 ```javascript
-// version.js
+// src/version.js
 module.exports = "1.1.0";
 ```
 
@@ -574,12 +579,12 @@ curl http://localhost:3000/todos
 
 ### Version Display Issues
 ```javascript
-// Check version.js
-console.log(require('./version')); // Should print current version
+// Check src/version.js
+console.log(require('./src/version')); // Should print current version
 
-// Check config.js imports version correctly
-const config = require('./config');
-console.log(config.version); // Should match version.js
+// Check src/config.js imports version correctly
+const config = require('./src/config');
+console.log(config.version); // Should match src/version.js
 ```
 
 ### Test Failures
