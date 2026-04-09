@@ -1,0 +1,22 @@
+version: '3.9'
+
+services:
+  todo-app-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: todo-app-dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - todo-network-dev
+    restart: unless-stopped
+
+networks:
+  todo-network-dev:
+    driver: bridge

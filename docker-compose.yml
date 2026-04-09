@@ -1,0 +1,23 @@
+version: '3.9'
+
+services:
+  todo-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: todo-app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    volumes:
+      - ./public:/app/public
+    networks:
+      - todo-network
+    labels:
+      - "com.example.description=Todo List Application"
+
+networks:
+  todo-network:
+    driver: bridge
