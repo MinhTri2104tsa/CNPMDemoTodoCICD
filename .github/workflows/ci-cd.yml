@@ -1,4 +1,4 @@
-name: Advanced Todo List CI/CD
+name: Advanced_Todo_List_CI/CD
 
 on:
   push:
@@ -147,8 +147,9 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository }}:${{ github.sha }}
+           tags: |
+            ghcr.io/minhtri2104tsa/cnpmdemotodocicd:latest
+            ghcr.io/minhtri2104tsa/cnpmdemotodocicd:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
