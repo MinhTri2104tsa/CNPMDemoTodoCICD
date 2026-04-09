@@ -1,20 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Todo List Application</title>
+    <title>Ứng dụng Todo</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0" />
 </head>
 <body>
     <div class="container">
         <!-- Header Section -->
         <header class="header">
-            <h1>📝 Advanced Todo List</h1>
-            <p class="subtitle">Stay organized with status tracking and due dates</p>
+            <h1><span class="material-symbols-outlined">list_alt</span> Danh sách Todo</h1>
+            <p class="subtitle">Giữ mọi thứ gọn gàng với trạng thái và hạn hoàn thành</p>
             <!-- Version Display -->
             <div class="version-info">
-                <small id="appVersion">v1.0.0 (loading...)</small>
+                <small id="appVersion">v1.0.0 (đang tải...)</small>
             </div>
         </header>
 
@@ -24,47 +25,47 @@
                 type="text"
                 id="todoInput"
                 class="todo-input"
-                placeholder="Enter todo title..."
+                placeholder="Nhập tiêu đề công việc..."
                 autocomplete="off"
             >
-            <select id="statusSelect" class="status-select">
-                <option value="pending">Pending</option>
-                <option value="in-progress">In Progress</option>
-                <option value="done">Done</option>
+            <select id="statusSelect" class="status-select" title="Chọn trạng thái" aria-label="Chọn trạng thái">
+                <option value="pending" title="Chưa xong">⏳ Chưa xong</option>
+                <option value="in-progress" title="Đang làm">🔄 Đang làm</option>
+                <option value="done" title="Hoàn thành">✅ Hoàn thành</option>
             </select>
             <input
                 type="date"
                 id="dueDateInput"
                 class="due-date-input"
-                title="Due date (optional)"
+                title="Hạn hoàn thành (tùy chọn)"
             >
-            <button id="addBtn" class="btn-add">Add Todo</button>
+            <button id="addBtn" class="btn-add" title="Thêm công việc" aria-label="Thêm công việc"><span class="material-symbols-outlined">add</span></button>
         </div>
 
         <!-- Filter Section -->
         <div class="filter-section">
             <div class="filter-controls">
-                <label>Filter by Status:</label>
-                <select id="filterStatus" class="filter-select">
-                    <option value="">All</option>
-                    <option value="pending">Pending</option>
-                    <option value="in-progress">In Progress</option>
-                    <option value="done">Done</option>
+                <label for="filterStatus" title="Lọc theo trạng thái" aria-label="Lọc theo trạng thái"><span class="material-symbols-outlined">filter_alt</span></label>
+                <select id="filterStatus" class="filter-select" title="Lọc theo trạng thái" aria-label="Lọc theo trạng thái">
+                    <option value="" title="Tất cả">📋 Tất cả</option>
+                    <option value="pending" title="Chưa xong">⏳ Chưa xong</option>
+                    <option value="in-progress" title="Đang làm">🔄 Đang làm</option>
+                    <option value="done" title="Hoàn thành">✅ Hoàn thành</option>
                 </select>
                 <input
                     type="text"
                     id="filterKeyword"
                     class="filter-input"
-                    placeholder="Search by keyword..."
+                    placeholder="Tìm kiếm..."
                 >
-                <button id="clearFiltersBtn" class="btn-clear">Clear Filters</button>
+                <button id="clearFiltersBtn" class="btn-clear" title="Xóa bộ lọc" aria-label="Xóa bộ lọc"><span class="material-symbols-outlined">cleaning_services</span></button>
             </div>
         </div>
 
         <!-- Loading Indicator -->
         <div id="loadingIndicator" class="loading-indicator hidden">
             <div class="spinner"></div>
-            <p>Loading...</p>
+            <p>Đang tải...</p>
         </div>
 
         <!-- Todo List Section -->
@@ -73,27 +74,27 @@
                 <!-- Todos will be dynamically inserted here -->
             </div>
             <div id="emptyMessage" class="empty-message">
-                <p>📭 No todos yet. Add one to get started!</p>
+                <p>📭 Chưa có công việc nào. Thêm công việc để bắt đầu!</p>
             </div>
         </section>
 
         <!-- Stats Section -->
         <section class="stats">
             <div class="stats-grid">
-                <div class="stat-item">
-                    <span class="stat-label">Total:</span>
+                <div class="stat-item" title="Tổng công việc">
+                    <span class="stat-label"><span class="material-symbols-outlined">list_alt</span></span>
                     <span class="stat-value" id="totalTodos">0</span>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-label">Pending:</span>
+                <div class="stat-item" title="Chưa xong">
+                    <span class="stat-label"><span class="material-symbols-outlined">hourglass_top</span></span>
                     <span class="stat-value" id="pendingTodos">0</span>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-label">In Progress:</span>
+                <div class="stat-item" title="Đang làm">
+                    <span class="stat-label"><span class="material-symbols-outlined">autorenew</span></span>
                     <span class="stat-value" id="inProgressTodos">0</span>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-label">Done:</span>
+                <div class="stat-item" title="Hoàn thành">
+                    <span class="stat-label"><span class="material-symbols-outlined">check_circle</span></span>
                     <span class="stat-value" id="doneTodos">0</span>
                 </div>
             </div>
@@ -101,8 +102,8 @@
 
         <!-- Footer with Version Info -->
         <footer class="footer">
-            <p>Advanced Todo List Application | Status: <span id="appStatus">checking...</span></p>
-            <small>Built with Node.js + Express | Enhanced for CI/CD Demo</small>
+            <p>Ứng dụng Todo | Trạng thái: <span id="appStatus">đang kiểm tra...</span></p>
+            <small>Xây dựng bằng Node.js + Express</small>
         </footer>
     </div>
 
