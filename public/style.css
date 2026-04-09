@@ -11,22 +11,24 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: 16px;
 }
 
 /* Main Container */
 .container {
     background: white;
-    border-radius: 15px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    border-radius: 14px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
     width: 100%;
-    max-width: 700px;
-    padding: 30px;
+    max-width: 660px;
+    padding: 24px;
     animation: slideIn 0.3s ease;
 }
 
@@ -44,19 +46,19 @@ body {
 /* Header Section */
 .header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 24px;
 }
 
 .header h1 {
     color: #333;
-    font-size: 2.5em;
-    margin-bottom: 10px;
+    font-size: 2rem;
+    margin-bottom: 8px;
 }
 
 .subtitle {
     color: #999;
-    font-size: 0.95em;
-    margin-bottom: 8px;
+    font-size: 0.85em;
+    margin-bottom: 6px;
 }
 
 /* Version Info Display */
@@ -75,39 +77,39 @@ body {
 /* Input Section */
 .input-section {
     display: flex;
-    gap: 10px;
-    margin-bottom: 25px;
+    gap: 8px;
+    margin-bottom: 20px;
     flex-wrap: wrap;
 }
 
 .todo-input {
     flex: 2;
-    min-width: 200px;
-    padding: 12px 15px;
+    min-width: 180px;
+    padding: 10px 12px;
     border: 2px solid #e0e0e0;
     border-radius: 8px;
-    font-size: 1em;
+    font-size: 0.95em;
     transition: all 0.3s ease;
 }
 
 .status-select {
     flex: 1;
-    min-width: 120px;
-    padding: 12px 15px;
+    min-width: 110px;
+    padding: 10px 12px;
     border: 2px solid #e0e0e0;
     border-radius: 8px;
-    font-size: 1em;
+    font-size: 0.95em;
     background: white;
     transition: all 0.3s ease;
 }
 
 .due-date-input {
     flex: 1;
-    min-width: 140px;
-    padding: 12px 15px;
+    min-width: 130px;
+    padding: 10px 12px;
     border: 2px solid #e0e0e0;
     border-radius: 8px;
-    font-size: 1em;
+    font-size: 0.95em;
     transition: all 0.3s ease;
 }
 
@@ -120,12 +122,12 @@ body {
 }
 
 .btn-add {
-    padding: 12px 25px;
+    padding: 10px 18px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
     border-radius: 8px;
-    font-size: 1em;
+    font-size: 0.95em;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -143,8 +145,8 @@ body {
 
 /* Filter Section */
 .filter-section {
-    margin-bottom: 20px;
-    padding: 15px;
+    margin-bottom: 18px;
+    padding: 12px;
     background: #f8f9fa;
     border-radius: 8px;
     border: 1px solid #e9ecef;
@@ -152,7 +154,7 @@ body {
 
 .filter-controls {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     align-items: center;
     flex-wrap: wrap;
 }
@@ -160,34 +162,34 @@ body {
 .filter-controls label {
     font-weight: 600;
     color: #495057;
-    font-size: 0.9em;
+    font-size: 0.85em;
 }
 
 .filter-select {
-    padding: 8px 12px;
+    padding: 7px 10px;
     border: 1px solid #ced4da;
     border-radius: 6px;
-    font-size: 0.9em;
+    font-size: 0.85em;
     background: white;
-    min-width: 120px;
+    min-width: 110px;
 }
 
 .filter-input {
-    padding: 8px 12px;
+    padding: 7px 10px;
     border: 1px solid #ced4da;
     border-radius: 6px;
-    font-size: 0.9em;
+    font-size: 0.85em;
     flex: 1;
-    min-width: 150px;
+    min-width: 140px;
 }
 
 .btn-clear {
-    padding: 8px 16px;
+    padding: 7px 14px;
     background: #6c757d;
     color: white;
     border: none;
     border-radius: 6px;
-    font-size: 0.9em;
+    font-size: 0.85em;
     cursor: pointer;
     transition: all 0.3s ease;
 }
@@ -242,7 +244,7 @@ body {
 .todo-item {
     background: #f9f9f9;
     border-radius: 10px;
-    padding: 16px;
+    padding: 14px;
     transition: all 0.3s ease;
     animation: fadeIn 0.3s ease;
     border-left: 4px solid #ddd;
@@ -287,7 +289,7 @@ body {
 
 .todo-title {
     flex: 1;
-    font-size: 1.1em;
+    font-size: 1em;
     font-weight: 500;
     color: #333;
     border: none;
@@ -310,16 +312,30 @@ body {
 }
 
 .status-dropdown {
-    padding: 6px 10px;
+    padding: 8px 12px;
     border: 1px solid #ced4da;
     border-radius: 6px;
-    font-size: 0.85em;
+    font-size: 0.95em;
     font-weight: 500;
     color: white;
     border: none;
     cursor: pointer;
     min-width: 110px;
     text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.4;
+}
+
+.filter-select,
+.status-select {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.9em;
+}
+
+.filter-select option,
+.status-select option,
+.status-dropdown option {
+    font-family: inherit;
 }
 
 .status-dropdown:focus {
@@ -346,6 +362,51 @@ body {
     transform: scale(0.95);
 }
 
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    font-size: 0.95rem;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+.btn-add,
+.btn-clear,
+.btn-delete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-add i,
+.btn-clear i,
+.btn-delete i,
+.stat-label i,
+.header i,
+.filter-controls label i {
+    font-size: 0.95rem;
+    vertical-align: middle;
+}
+
+.btn-add,
+.btn-clear,
+.btn-delete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .todo-details {
     font-size: 0.85em;
     color: #666;
@@ -355,11 +416,14 @@ body {
     display: flex;
     justify-content: space-between;
     margin-bottom: 4px;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .todo-date,
 .todo-due {
     font-style: italic;
+    font-size: 0.82em;
 }
 
 .todo-due.overdue {
@@ -390,9 +454,9 @@ body {
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 15px;
-    padding: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 12px;
+    padding: 16px;
     background: #f8f9fa;
     border-radius: 10px;
     border: 1px solid #e9ecef;
@@ -404,10 +468,14 @@ body {
 
 .stat-label {
     display: block;
-    font-size: 0.85em;
+    font-size: 0.8em;
     color: #6c757d;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
     font-weight: 500;
+}
+
+.stat-value {
+    font-size: 1.3em;
 }
 
 .stat-value {

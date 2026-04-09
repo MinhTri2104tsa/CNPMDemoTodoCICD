@@ -68,7 +68,7 @@ async function loadTodos() {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to load todos');
+      throw new Error('Không tải được danh sách công việc');
     }
 
     const todos = await response.json();
@@ -76,7 +76,7 @@ async function loadTodos() {
     updateStats(todos);
   } catch (error) {
     console.error('Error loading todos:', error);
-    alert('Failed to load todos. Please refresh the page.');
+    alert('Không tải được danh sách công việc. Vui lòng tải lại trang.');
   } finally {
     showLoading(false);
   }
@@ -112,7 +112,7 @@ async function handleAddTodo() {
 
   // Validate input
   if (!title) {
-    alert('Please enter a todo title');
+    alert('Vui lòng nhập tiêu đề công việc');
     return;
   }
 
@@ -138,7 +138,7 @@ async function handleAddTodo() {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to create todo');
+      throw new Error(error.message || 'Không thể tạo công việc');
     }
 
     // Clear input fields
@@ -152,7 +152,7 @@ async function handleAddTodo() {
     await loadStats();
   } catch (error) {
     console.error('Error adding todo:', error);
-    alert(`Failed to add todo: ${error.message}`);
+    alert(`Không thể thêm công việc: ${error.message}`);
   } finally {
     showLoading(false);
   }
@@ -176,15 +176,15 @@ async function handleUpdateStatus(id, newStatus) {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to update todo');
+      throw new Error('Không thể cập nhật trạng thái công việc');
     }
 
-    // Reload todos and stats
+    // Load lại danh sách và số liệu
     await loadTodos();
     await loadStats();
   } catch (error) {
     console.error('Error updating todo:', error);
-    alert('Failed to update todo. Please try again.');
+    alert('Không thể cập nhật công việc. Vui lòng thử lại.');
   } finally {
     showLoading(false);
   }
@@ -197,7 +197,7 @@ async function handleUpdateStatus(id, newStatus) {
  */
 async function handleUpdateTitle(id, newTitle) {
   if (!newTitle.trim()) {
-    alert('Title cannot be empty');
+    alert('Tiêu đề không được để trống');
     return;
   }
 
@@ -213,14 +213,14 @@ async function handleUpdateTitle(id, newTitle) {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to update todo');
+      throw new Error('Không thể cập nhật công việc');
     }
 
-    // Reload todos
+    // Load lại danh sách công việc
     await loadTodos();
   } catch (error) {
     console.error('Error updating todo:', error);
-    alert('Failed to update todo. Please try again.');
+    alert('Không thể cập nhật công việc. Vui lòng thử lại.');
   } finally {
     showLoading(false);
   }
@@ -231,7 +231,7 @@ async function handleUpdateTitle(id, newTitle) {
  * @param {number} id - Todo ID
  */
 async function handleDeleteTodo(id) {
-  if (!confirm('Are you sure you want to delete this todo?')) {
+  if (!confirm('Bạn có chắc muốn xóa công việc này?')) {
     return;
   }
 
@@ -245,7 +245,7 @@ async function handleDeleteTodo(id) {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to delete todo');
+      throw new Error('Không thể xóa công việc');
     }
 
     // Reload todos and stats
@@ -253,7 +253,7 @@ async function handleDeleteTodo(id) {
     await loadStats();
   } catch (error) {
     console.error('Error deleting todo:', error);
-    alert('Failed to delete todo. Please try again.');
+    alert('Không thể xóa công việc. Vui lòng thử lại.');
   } finally {
     showLoading(false);
   }
@@ -307,9 +307,9 @@ function renderTodos(todos) {
     // Show empty message
     emptyMessage.classList.remove('hidden');
     if (todos.length === 0) {
-      emptyMessage.innerHTML = '<p>📭 No todos yet. Add one to get started!</p>';
+      emptyMessage.innerHTML = '<p>📭 Chưa có công việc nào. Thêm công việc để bắt đầu!</p>';
     } else {
-      emptyMessage.innerHTML = '<p>🔍 No todos match your filters.</p>';
+      emptyMessage.innerHTML = '<p>🔍 Không có công việc phù hợp với bộ lọc.</p>';
     }
   } else {
     // Hide empty message
@@ -333,15 +333,15 @@ function createTodoElement(todo) {
   div.className = `todo-item status-${todo.status}`;
 
   const statusOptions = [
-    { value: 'pending', label: 'Pending', color: '#ffa726' },
-    { value: 'in-progress', label: 'In Progress', color: '#42a5f5' },
-    { value: 'done', label: 'Done', color: '#66bb6a' }
+    { value: 'pending', icon: '⏳', label: 'Chưa xong', title: 'Chưa xong', color: '#ffa726' },
+    { value: 'in-progress', icon: '🔄', label: 'Đang làm', title: 'Đang làm', color: '#42a5f5' },
+    { value: 'done', icon: '✅', label: 'Hoàn thành', title: 'Hoàn thành', color: '#66bb6a' }
   ];
 
   const currentStatus = statusOptions.find(s => s.value === todo.status);
   const statusColor = currentStatus ? currentStatus.color : '#999';
 
-  const dueDateDisplay = todo.dueDate ? formatDate(todo.dueDate) : 'No due date';
+  const dueDateDisplay = todo.dueDate ? formatDate(todo.dueDate) : 'Không có hạn';
   const isOverdue = todo.dueDate && new Date(todo.dueDate) < new Date() && todo.status !== 'done';
 
   div.innerHTML = `
@@ -350,10 +350,10 @@ function createTodoElement(todo) {
       <div class="todo-actions">
         <select class="status-dropdown" onchange="handleUpdateStatus(${todo.id}, this.value)" style="background-color: ${statusColor}">
           ${statusOptions.map(option =>
-            `<option value="${option.value}" ${option.value === todo.status ? 'selected' : ''}>${option.label}</option>`
+            `<option value="${option.value}" title="${option.title}" ${option.value === todo.status ? 'selected' : ''}>${option.icon} ${option.label}</option>`
           ).join('')}
         </select>
-        <button class="btn-delete" onclick="handleDeleteTodo(${todo.id})">🗑️</button>
+        <button class="btn-delete" onclick="handleDeleteTodo(${todo.id})"><span class="material-symbols-outlined">delete</span></button>
       </div>
     </div>
     <div class="todo-details">
@@ -422,7 +422,7 @@ function showLoading(show) {
 function formatDate(dateString) {
   if (!dateString) return 'N/A';
   const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', {
+  return date.toLocaleDateString('vi-VN', {
     year: 'numeric',
     month: 'short',
     day: 'numeric'
@@ -470,9 +470,9 @@ async function loadAppVersion() {
       // Log timestamp
       console.log(`⏱️  Timestamp: ${status.timestamp}`);
     } else {
-      console.warn('Failed to fetch app version');
+      console.warn('Không lấy được phiên bản ứng dụng');
       if (appStatusSpan) {
-        appStatusSpan.textContent = 'offline';
+        appStatusSpan.textContent = 'không kết nối';
       }
     }
   } catch (error) {
